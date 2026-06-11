@@ -12,8 +12,8 @@ export function Lookbook() {
   useEffect(() => {
     async function loadData() {
       try {
-        const res = await fetchAPI("/lookbook-section", { 
-          "populate[sections][populate]": "*" 
+        const res = await fetchAPI("/lookbook-section", {
+          "populate[sections][populate]": "*"
         })
         setData(res.data)
       } catch (err) {
@@ -106,7 +106,7 @@ export function Lookbook() {
               className={`grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8 items-center ${idx !== categories.length - 1 ? 'mb-32' : ''}`}
             >
               {/* Image Column */}
-              <div className={`md:col-span-[5] ${isEven ? 'h-[600px] md:col-span-5' : 'h-[450px] md:col-span-7 order-1 md:order-2'} overflow-hidden group relative`}>
+              <div className={`md:col-span-[5] ${isEven ? 'h-[450px] md:col-span-5 ' : 'h-[450px] md:col-span-5 order-1 md:order-2'} overflow-hidden group relative`}>
                 <img
                   src={mainImgUrl}
                   alt={cat.heading}
@@ -120,7 +120,7 @@ export function Lookbook() {
               </div>
 
               {/* Text Column */}
-              <div className={`md:col-span-6 flex flex-col justify-center ${isEven ? 'md:col-start-7' : 'md:col-span-5 order-2 md:order-1'}`}>
+              <div className={`md:col-span-6 flex flex-col justify-center ${isEven ? 'md:col-start-7 ' : 'md:col-span-7 order-2 md:order-1 md:max-w-xl'}`}>
                 <h3 className="font-heading text-3xl text-primary mb-6">
                   {cat.heading}
                 </h3>

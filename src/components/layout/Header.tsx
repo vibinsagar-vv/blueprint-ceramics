@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Icon } from "@iconify/react"
@@ -22,6 +22,8 @@ export function Header({ onOpenLogin, userSession, onLogout }: HeaderProps) {
   const [bathwareLeftHover, setBathwareLeftHover] = useState("Collections")
   const [solutionsLeftHover, setSolutionsLeftHover] = useState("Concrete Solutions")
 
+  const profileMenuRef = useRef<HTMLDivElement>(null)
+
   const location = useLocation()
   const navigate = useNavigate()
 
@@ -39,6 +41,21 @@ export function Header({ onOpenLogin, userSession, onLogout }: HeaderProps) {
     setShowProfileMenu(false)
     setActiveMenu(null)
   }, [location.pathname])
+
+  // Handle click outside for profile menu
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target as Node)) {
+        setShowProfileMenu(false)
+      }
+    }
+    if (showProfileMenu) {
+      document.addEventListener("mousedown", handleClickOutside)
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [showProfileMenu])
 
   const navigateToFilteredProducts = (filters: { category: string; subCategory?: string; application?: string; size?: string; finish?: string; viewBy?: "application" | "space" | "size" | "look" }) => {
     setActiveMenu(null)
@@ -166,58 +183,111 @@ export function Header({ onOpenLogin, userSession, onLogout }: HeaderProps) {
           </Button>
 
           {/* Account Profile Icon / Dropdown */}
-          <div className="relative">
-            {userSession ? (
-              <button
-                onClick={() => setShowProfileMenu(!showProfileMenu)}
-                className="flex items-center gap-1.5 p-1 text-primary/80 hover:text-primary transition-colors focus:outline-none cursor-pointer"
-              >
+          <div className="relative" ref={profileMenuRef}>
+            <button
+              onClick={() => setShowProfileMenu(!showProfileMenu)}
+              className={`flex items-center gap-1.5 p-1 transition-colors focus:outline-none cursor-pointer ${userSession ? "text-primary/80 hover:text-primary" : "text-primary/70 hover:text-primary hover:scale-105"}`}
+              title="Account"
+            >
+              {userSession ? (
                 <div className="w-8 h-8 rounded-full bg-accent/10 border border-accent/30 text-accent flex items-center justify-center text-xs font-bold font-body uppercase shadow-sm">
                   {userSession.name.slice(0, 2)}
                 </div>
-              </button>
-            ) : (
-              <button
-                onClick={onOpenLogin}
-                className="p-1.5 text-primary/70 hover:text-primary hover:scale-105 transition-all focus:outline-none cursor-pointer"
-                title="Account Login"
-              >
-                <Icon icon="solar:user-circle-linear" className="w-6 h-6" />
-              </button>
-            )}
+              ) : (
+                <div className="p-0.5">
+                  <Icon icon="solar:user-circle-linear" className="w-6 h-6" />
+                </div>
+              )}
+            </button>
 
             {/* Profile Dropdown Menu */}
-            {showProfileMenu && userSession && (
-              <div className="absolute right-0 mt-3.5 w-56 bg-white/95 backdrop-blur-xl border border-gray-100 shadow-2xl shadow-black/5 rounded-xl p-4 flex flex-col gap-1 z-50 animate-in fade-in-0 slide-in-from-top-1 duration-200">
-                <div className="px-2 py-1.5 border-b border-gray-100 mb-2">
-                  <p className="text-[10px] font-body uppercase tracking-wider text-accent font-bold">Logged In As</p>
-                  <p className="text-sm font-heading font-bold text-primary truncate mt-0.5">{userSession.name}</p>
-                  <p className="text-xs font-body text-primary/50 truncate">{userSession.email}</p>
-                </div>
-                <button
-                  onClick={() => alert("Redirecting to Saved Materials...")}
-                  className="flex items-center gap-2 text-xs font-body text-primary/70 hover:text-primary hover:bg-gray-50/80 p-2.5 rounded-lg transition-colors w-full text-left focus:outline-none cursor-pointer"
-                >
-                  <Icon icon="solar:bookmark-linear" className="w-4 h-4" />
-                  Saved Materials
-                </button>
-                <button
-                  onClick={() => alert("Opening account settings...")}
-                  className="flex items-center gap-2 text-xs font-body text-primary/70 hover:text-primary hover:bg-gray-50/80 p-2.5 rounded-lg transition-colors w-full text-left focus:outline-none cursor-pointer"
-                >
-                  <Icon icon="solar:settings-linear" className="w-4 h-4" />
-                  Account Settings
-                </button>
-                <button
-                  onClick={() => {
-                    onLogout()
-                    setShowProfileMenu(false)
-                  }}
-                  className="flex items-center gap-2 text-xs font-body text-red-600 hover:bg-red-50 p-2.5 rounded-lg transition-colors w-full text-left mt-2 border-t border-gray-100 pt-3 focus:outline-none cursor-pointer font-bold"
-                >
-                  <Icon icon="solar:logout-3-linear" className="w-4 h-4" />
-                  Sign Out
-                </button>
+            {showProfileMenu && (
+              <div className="absolute right-0 mt-3.5 w-80 bg-white/95 backdrop-blur-xl border border-gray-100 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] rounded-2xl p-2 flex flex-col z-50 animate-in fade-in-0 slide-in-from-top-1 duration-200">
+                {userSession ? (
+                  <>
+                    <div className="px-2 py-1.5 border-b border-gray-100 mb-2">
+                      <p className="text-[10px] font-body uppercase tracking-wider text-accent font-bold">Logged In As</p>
+                      <p className="text-sm font-heading font-bold text-primary truncate mt-0.5">{userSession.name}</p>
+                      <p className="text-xs font-body text-primary/50 truncate">{userSession.email}</p>
+                    </div>
+                    <button
+                      onClick={() => alert("Redirecting to Saved Materials...")}
+                      className="flex items-center gap-2 text-xs font-body text-primary/70 hover:text-primary hover:bg-gray-50/80 p-2.5 rounded-lg transition-colors w-full text-left focus:outline-none cursor-pointer"
+                    >
+                      <Icon icon="solar:bookmark-linear" className="w-4 h-4" />
+                      Saved Materials
+                    </button>
+                    <button
+                      onClick={() => alert("Opening account settings...")}
+                      className="flex items-center gap-2 text-xs font-body text-primary/70 hover:text-primary hover:bg-gray-50/80 p-2.5 rounded-lg transition-colors w-full text-left focus:outline-none cursor-pointer"
+                    >
+                      <Icon icon="solar:settings-linear" className="w-4 h-4" />
+                      Account Settings
+                    </button>
+                    <button
+                      onClick={() => {
+                        onLogout()
+                        setShowProfileMenu(false)
+                      }}
+                      className="flex items-center gap-2 text-xs font-body text-red-600 hover:bg-red-50 p-2.5 rounded-lg transition-colors w-full text-left mt-2 border-t border-gray-100 pt-3 focus:outline-none cursor-pointer font-bold"
+                    >
+                      <Icon icon="solar:logout-3-linear" className="w-4 h-4" />
+                      Sign Out
+                    </button>
+                  </>
+                ) : (
+                  <div className="p-1">
+                    <div className="p-3 pb-4">
+                      <h3 className="text-xl font-heading font-bold text-primary tracking-tight">Welcome</h3>
+                      <p className="text-[13px] font-body text-primary/60 mt-1.5 leading-relaxed">
+                        Access your account, track orders, and curate your material wishlist.
+                      </p>
+                    </div>
+                    
+                    <div className="px-2 pb-3 flex flex-col gap-2">
+                      <button 
+                        onClick={() => { setShowProfileMenu(false); onOpenLogin(); }}
+                        className="w-full relative group overflow-hidden bg-primary text-white rounded-xl h-11 flex items-center justify-center gap-2 text-sm font-body font-medium transition-all hover:shadow-lg focus:outline-none cursor-pointer"
+                      >
+                        <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
+                        <Icon icon="solar:login-3-bold" className="w-4 h-4" />
+                        <span className="relative z-10">Sign In to Account</span>
+                      </button>
+                      <button 
+                        onClick={() => { setShowProfileMenu(false); onOpenLogin(); }}
+                        className="w-full bg-white hover:bg-gray-50 text-primary rounded-xl h-11 flex items-center justify-center gap-2 text-sm font-body font-medium transition-colors focus:outline-none border border-gray-200 cursor-pointer"
+                      >
+                        <span>Create Account</span>
+                      </button>
+                    </div>
+
+                    <div className="h-[1px] w-[calc(100%-16px)] mx-auto bg-gray-100 my-1"></div>
+
+                    <div className="p-2 flex flex-col gap-0.5">
+                      <button className="flex items-center justify-between text-[14px] font-body text-primary/80 hover:text-primary hover:bg-gray-50/80 p-3 rounded-xl transition-all w-full text-left focus:outline-none cursor-pointer group">
+                        <div className="flex items-center gap-3">
+                          <Icon icon="solar:user-rounded-linear" className="w-[18px] h-[18px] text-primary/50 group-hover:text-primary transition-colors" />
+                          <span>Profile Settings</span>
+                        </div>
+                        <Icon icon="ph:caret-right" className="w-3.5 h-3.5 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-primary/40" />
+                      </button>
+                      <button className="flex items-center justify-between text-[14px] font-body text-primary/80 hover:text-primary hover:bg-gray-50/80 p-3 rounded-xl transition-all w-full text-left focus:outline-none cursor-pointer group">
+                        <div className="flex items-center gap-3">
+                          <Icon icon="solar:heart-linear" className="w-[18px] h-[18px] text-primary/50 group-hover:text-primary transition-colors" />
+                          <span>Saved Wishlist</span>
+                        </div>
+                        <Icon icon="ph:caret-right" className="w-3.5 h-3.5 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-primary/40" />
+                      </button>
+                      <button className="flex items-center justify-between text-[14px] font-body text-primary/80 hover:text-primary hover:bg-gray-50/80 p-3 rounded-xl transition-all w-full text-left focus:outline-none cursor-pointer group">
+                        <div className="flex items-center gap-3">
+                          <Icon icon="solar:letter-linear" className="w-[18px] h-[18px] text-primary/50 group-hover:text-primary transition-colors" />
+                          <span>Get In Touch</span>
+                        </div>
+                        <Icon icon="ph:caret-right" className="w-3.5 h-3.5 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-primary/40" />
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
