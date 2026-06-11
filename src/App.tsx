@@ -8,6 +8,8 @@ import { Footer } from "@/components/layout/Footer"
 import { AccountModal } from "@/components/sections/AccountModal"
 import Catalogues from "@/components/pages/Catalogues"
 import DesignStudio from "@/components/pages/DesignStudio"
+import Products from "@/components/pages/Products"
+import ProductDetail from "@/components/pages/ProductDetail"
 
 // Scroll to top helper on route change
 function ScrollToTop() {
@@ -82,6 +84,8 @@ function MainLayout() {
           />
           <Route path="/catalogues" element={<Catalogues />} />
           <Route path="/design-studio" element={<DesignStudio />} />
+          <Route path="/products" element={<Products />} />
+          <Route path="/products/:id" element={<ProductDetail />} />
         </Routes>
       </main>
       <Footer />
@@ -105,4 +109,3 @@ function App() {
 }
 
 export default App
-
