@@ -245,20 +245,20 @@ export function Header({ onOpenLogin, userSession, onLogout }: HeaderProps) {
                     </div>
                     
                     <div className="px-2 pb-3 flex flex-col gap-2">
-                      <button 
-                        onClick={() => { setShowProfileMenu(false); onOpenLogin(); }}
+                      <a 
+                        href="https://respected-victory-5041000857.strapiapp.com/admin/auth/login"
                         className="w-full relative group overflow-hidden bg-primary text-white rounded-xl h-11 flex items-center justify-center gap-2 text-sm font-body font-medium transition-all hover:shadow-lg focus:outline-none cursor-pointer"
                       >
                         <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
                         <Icon icon="solar:login-3-bold" className="w-4 h-4" />
                         <span className="relative z-10">Sign In to Account</span>
-                      </button>
-                      <button 
-                        onClick={() => { setShowProfileMenu(false); onOpenLogin(); }}
+                      </a>
+                      <a 
+                        href="https://respected-victory-5041000857.strapiapp.com/admin/auth/login"
                         className="w-full bg-white hover:bg-gray-50 text-primary rounded-xl h-11 flex items-center justify-center gap-2 text-sm font-body font-medium transition-colors focus:outline-none border border-gray-200 cursor-pointer"
                       >
                         <span>Create Account</span>
-                      </button>
+                      </a>
                     </div>
 
                     <div className="h-[1px] w-[calc(100%-16px)] mx-auto bg-gray-100 my-1"></div>
