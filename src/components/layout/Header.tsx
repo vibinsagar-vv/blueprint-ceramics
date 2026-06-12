@@ -245,8 +245,7 @@ export function Header({ userSession, onLogout }: HeaderProps) {
                     </div>
                     
                     <div className="px-2 pb-3 flex flex-col gap-2">
-                      <a 
-                        href="https://respected-victory-5041000857.strapiapp.com/admin/auth/login"
+                      <a target="_blank" rel="noopener noreferrer" href="https://respected-victory-5041000857.strapiapp.com/admin/auth/login"
                         className="w-full relative group overflow-hidden bg-primary text-white rounded-xl h-11 flex items-center justify-center gap-2 text-sm font-body font-medium transition-all hover:shadow-lg focus:outline-none cursor-pointer"
                       >
                         <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
