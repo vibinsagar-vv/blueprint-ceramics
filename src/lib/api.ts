@@ -1,5 +1,6 @@
 const STRAPI_URL = import.meta.env.VITE_STRAPI_URL ||"https://respected-victory-5041000857.strapiapp.com/" || "http://localhost:1337";
 
+
 export async function fetchAPI(path: string, urlParamsObject: Record<string, any> = {}) {
   try {
     const url = new URL(`/api${path}`, STRAPI_URL);
