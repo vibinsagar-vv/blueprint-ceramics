@@ -9,7 +9,7 @@ import { fetchAPI, getStrapiMedia } from "@/lib/api"
 export default function Products() {
   const [searchParams, setSearchParams] = useSearchParams()
   const navigate = useNavigate()
-  
+
   // Parse parameters
   const queryCategory = searchParams.get("category") as TopLevelCategory | null
   const querySubCategory = searchParams.get("subCategory") as ProductCategory | null
@@ -17,13 +17,15 @@ export default function Products() {
   const querySize = searchParams.get("size")
   const queryFinish = searchParams.get("finish")
   const queryViewBy = searchParams.get("viewBy") || "application"
-  
+
   const [products, setProducts] = React.useState<Product[]>([])
   const [loading, setLoading] = React.useState(true)
 
   React.useEffect(() => {
     async function fetchProducts() {
       try {
+        console.log(loading);
+
         const res = await fetchAPI("/products", { populate: "*" })
         const mappedProducts = res.data.map((item: any) => ({
           id: item.documentId || item.id?.toString(),
@@ -88,7 +90,7 @@ export default function Products() {
       p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       p.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
       p.subCategory.toLowerCase().includes(searchQuery.toLowerCase())
-      
+
     return matchesCategory && matchesSubCategory && matchesFinish && matchesSize && matchesApp && matchesSearch
   })
 
@@ -158,8 +160,8 @@ export default function Products() {
   let trackTitle = ""
   let trackDescription = ""
   let activeValue = ""
-  let setActiveValue: (v: string) => void = () => {}
-  
+  let setActiveValue: (v: string) => void = () => { }
+
   if (queryViewBy === "application") {
     trackData = applicationImages.map(a => ({ name: a.name, image: a.image, filterVal: a.name }))
     activeValue = activeApp
@@ -189,8 +191,8 @@ export default function Products() {
   const currentTrackItem = trackData.find(a => a.filterVal === activeValue && activeValue !== "All")
   const heroImage = currentTrackItem ? currentTrackItem.image : (trackData[0]?.image || "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=2000&q=80")
   const heroTitle = currentTrackItem ? `${currentTrackItem.name} Products` : trackTitle
-  const heroDescription = currentTrackItem 
-    ? `Discover our premium selection tailored specifically for ${currentTrackItem.name.toLowerCase()}.` 
+  const heroDescription = currentTrackItem
+    ? `Discover our premium selection tailored specifically for ${currentTrackItem.name.toLowerCase()}.`
     : trackDescription
 
   return (
@@ -203,7 +205,7 @@ export default function Products() {
           className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
         />
         <div className="absolute inset-0 bg-black/40" />
-        
+
         <div className="relative z-10 container mx-auto px-6 md:px-12 text-center md:text-left flex flex-col md:flex-row items-center justify-between">
           <div className="bg-white/95 backdrop-blur-sm p-8 md:p-12 max-w-lg shadow-2xl">
             <h1 className="font-heading text-3xl md:text-4xl text-primary font-bold tracking-wide">
@@ -225,7 +227,7 @@ export default function Products() {
               <p className="font-body text-[13px] text-primary/60 mt-1">{trackDescription}</p>
             </div>
             {activeValue !== "All" && (
-              <button 
+              <button
                 onClick={() => setActiveValue("All")}
                 className="text-xs font-body font-bold text-accent uppercase tracking-widest hover:text-primary transition-colors"
               >
@@ -236,16 +238,15 @@ export default function Products() {
 
           <div className="flex overflow-x-auto gap-4 md:gap-6 pb-6 hide-scrollbar scroll-smooth">
             {trackData.map((item) => (
-              <div 
+              <div
                 key={item.name}
                 onClick={() => setActiveValue(activeValue === item.filterVal ? "All" : item.filterVal)}
-                className={`group relative shrink-0 w-[260px] md:w-[320px] aspect-[16/9] cursor-pointer overflow-hidden ${
-                  activeValue === item.filterVal ? "ring-2 ring-accent ring-offset-2" : ""
-                }`}
+                className={`group relative shrink-0 w-[260px] md:w-[320px] aspect-[16/9] cursor-pointer overflow-hidden ${activeValue === item.filterVal ? "ring-2 ring-accent ring-offset-2" : ""
+                  }`}
               >
-                <img 
-                  src={item.image} 
-                  alt={item.name} 
+                <img
+                  src={item.image}
+                  alt={item.name}
                   className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent transition-opacity group-hover:opacity-90" />
@@ -253,9 +254,8 @@ export default function Products() {
                   <span className="text-white font-body text-sm uppercase tracking-widest font-bold">
                     {item.name}
                   </span>
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
-                    activeValue === item.filterVal ? "bg-accent text-white" : "bg-white text-primary group-hover:bg-accent group-hover:text-white"
-                  }`}>
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${activeValue === item.filterVal ? "bg-accent text-white" : "bg-white text-primary group-hover:bg-accent group-hover:text-white"
+                    }`}>
                     <Icon icon="ph:arrow-right-thin" className="w-5 h-5" />
                   </div>
                 </div>
@@ -268,7 +268,7 @@ export default function Products() {
       {/* ── Section 3: Filter + Grid Layout ──────────────────────────────── */}
       <section className="py-12 container mx-auto px-6 md:px-12">
         <div className="flex flex-col lg:flex-row gap-10 items-start">
-          
+
           {/* Sidebar */}
           <aside className="w-full lg:w-64 bg-white border border-gray-100 p-6 flex flex-col gap-8 shrink-0">
             <div className="flex justify-between items-center border-b border-gray-100 pb-4">
@@ -291,9 +291,8 @@ export default function Products() {
               <div className="flex flex-col gap-2">
                 {(["All", "Tiles", "Bathware", "Building Solutions"] as const).map((cat) => (
                   <label key={cat} className="flex items-center gap-3 cursor-pointer group" onClick={() => handleCategoryChange(cat)}>
-                    <div className={`w-4 h-4 rounded-full border flex items-center justify-center transition-colors ${
-                      selectedCategory === cat ? "border-accent" : "border-gray-300 group-hover:border-accent"
-                    }`}>
+                    <div className={`w-4 h-4 rounded-full border flex items-center justify-center transition-colors ${selectedCategory === cat ? "border-accent" : "border-gray-300 group-hover:border-accent"
+                      }`}>
                       {selectedCategory === cat && <div className="w-2 h-2 rounded-full bg-accent" />}
                     </div>
                     <span className={`text-xs font-body ${selectedCategory === cat ? "font-bold text-primary" : "text-primary/70 group-hover:text-primary"}`}>
@@ -312,9 +311,8 @@ export default function Products() {
                 </label>
                 <div className="flex flex-col gap-2">
                   <label className="flex items-center gap-3 cursor-pointer group" onClick={() => handleSubCategoryChange("All")}>
-                    <div className={`w-4 h-4 rounded-sm border flex items-center justify-center transition-colors ${
-                      selectedSubCategory === "All" ? "border-accent bg-accent" : "border-gray-300 group-hover:border-accent"
-                    }`}>
+                    <div className={`w-4 h-4 rounded-sm border flex items-center justify-center transition-colors ${selectedSubCategory === "All" ? "border-accent bg-accent" : "border-gray-300 group-hover:border-accent"
+                      }`}>
                       {selectedSubCategory === "All" && <Icon icon="ph:check-bold" className="text-white w-3 h-3" />}
                     </div>
                     <span className={`text-xs font-body ${selectedSubCategory === "All" ? "font-bold text-primary" : "text-primary/70 group-hover:text-primary"}`}>
@@ -323,9 +321,8 @@ export default function Products() {
                   </label>
                   {categoryMap[selectedCategory as TopLevelCategory]?.map((sub) => (
                     <label key={sub} className="flex items-center gap-3 cursor-pointer group" onClick={() => handleSubCategoryChange(sub)}>
-                      <div className={`w-4 h-4 rounded-sm border flex items-center justify-center transition-colors ${
-                        selectedSubCategory === sub ? "border-accent bg-accent" : "border-gray-300 group-hover:border-accent"
-                      }`}>
+                      <div className={`w-4 h-4 rounded-sm border flex items-center justify-center transition-colors ${selectedSubCategory === sub ? "border-accent bg-accent" : "border-gray-300 group-hover:border-accent"
+                        }`}>
                         {selectedSubCategory === sub && <Icon icon="ph:check-bold" className="text-white w-3 h-3" />}
                       </div>
                       <span className={`text-xs font-body ${selectedSubCategory === sub ? "font-bold text-primary" : "text-primary/70 group-hover:text-primary"}`}>
@@ -344,9 +341,8 @@ export default function Products() {
               </label>
               <div className="flex flex-col gap-2 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
                 <label className="flex items-center gap-3 cursor-pointer group" onClick={() => handleFinishChange("All")}>
-                  <div className={`w-4 h-4 rounded-full border flex items-center justify-center transition-colors ${
-                    selectedFinish === "All" ? "border-accent" : "border-gray-300 group-hover:border-accent"
-                  }`}>
+                  <div className={`w-4 h-4 rounded-full border flex items-center justify-center transition-colors ${selectedFinish === "All" ? "border-accent" : "border-gray-300 group-hover:border-accent"
+                    }`}>
                     {selectedFinish === "All" && <div className="w-2 h-2 rounded-full bg-accent" />}
                   </div>
                   <span className={`text-xs font-body ${selectedFinish === "All" ? "font-bold text-primary" : "text-primary/70 group-hover:text-primary"}`}>
@@ -355,9 +351,8 @@ export default function Products() {
                 </label>
                 {allFinishes.map((f) => (
                   <label key={f} className="flex items-center gap-3 cursor-pointer group" onClick={() => handleFinishChange(f)}>
-                    <div className={`w-4 h-4 rounded-full border flex items-center justify-center transition-colors ${
-                      selectedFinish === f ? "border-accent" : "border-gray-300 group-hover:border-accent"
-                    }`}>
+                    <div className={`w-4 h-4 rounded-full border flex items-center justify-center transition-colors ${selectedFinish === f ? "border-accent" : "border-gray-300 group-hover:border-accent"
+                      }`}>
                       {selectedFinish === f && <div className="w-2 h-2 rounded-full bg-accent" />}
                     </div>
                     <span className={`text-xs font-body ${selectedFinish === f ? "font-bold text-primary" : "text-primary/70 group-hover:text-primary"}`}>
@@ -375,9 +370,8 @@ export default function Products() {
               </label>
               <div className="flex flex-col gap-2 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
                 <label className="flex items-center gap-3 cursor-pointer group" onClick={() => handleSizeChange("All")}>
-                  <div className={`w-4 h-4 rounded-full border flex items-center justify-center transition-colors ${
-                    selectedSize === "All" ? "border-accent" : "border-gray-300 group-hover:border-accent"
-                  }`}>
+                  <div className={`w-4 h-4 rounded-full border flex items-center justify-center transition-colors ${selectedSize === "All" ? "border-accent" : "border-gray-300 group-hover:border-accent"
+                    }`}>
                     {selectedSize === "All" && <div className="w-2 h-2 rounded-full bg-accent" />}
                   </div>
                   <span className={`text-xs font-body ${selectedSize === "All" ? "font-bold text-primary" : "text-primary/70 group-hover:text-primary"}`}>
@@ -386,9 +380,8 @@ export default function Products() {
                 </label>
                 {allSizes.map((s) => (
                   <label key={s} className="flex items-center gap-3 cursor-pointer group" onClick={() => handleSizeChange(s)}>
-                    <div className={`w-4 h-4 rounded-full border flex items-center justify-center transition-colors ${
-                      selectedSize === s ? "border-accent" : "border-gray-300 group-hover:border-accent"
-                    }`}>
+                    <div className={`w-4 h-4 rounded-full border flex items-center justify-center transition-colors ${selectedSize === s ? "border-accent" : "border-gray-300 group-hover:border-accent"
+                      }`}>
                       {selectedSize === s && <div className="w-2 h-2 rounded-full bg-accent" />}
                     </div>
                     <span className={`text-xs font-body ${selectedSize === s ? "font-bold text-primary" : "text-primary/70 group-hover:text-primary"}`}>
@@ -444,7 +437,7 @@ export default function Products() {
                         alt={`${product.name} installed`}
                         className="absolute inset-0 w-full h-full object-cover opacity-0 transition-all duration-700 ease-out scale-105 group-hover:scale-100 group-hover:opacity-100"
                       />
-                      
+
                       {/* Top Badges */}
                       <div className="absolute top-4 left-4 flex gap-2 z-10">
                         {product.isNewArrival && (
@@ -467,7 +460,7 @@ export default function Products() {
                         <span className="text-[9px] font-body uppercase tracking-[0.2em] text-primary/40 font-bold">{product.subCategory}</span>
                         <span className="text-[9px] font-body uppercase tracking-[0.2em] text-primary/60">{product.dimensions}</span>
                       </div>
-                      
+
                       {/* Middle Row: Name */}
                       <div className="flex justify-between items-start gap-4 mb-2">
                         <h3 className="font-heading font-bold text-lg leading-tight text-primary group-hover:text-accent transition-colors duration-300">
@@ -477,12 +470,12 @@ export default function Products() {
                           <Icon icon="solar:arrow-right-linear" className="w-4 h-4 text-primary" />
                         </div>
                       </div>
-                      
+
                       {/* Lower Row: Code */}
                       <div className="text-[10px] font-body uppercase tracking-widest text-primary/60">
                         <span>{product.code}</span>
                       </div>
-                      
+
                       {/* Feature Icons Row */}
                       {product.features && product.features.length > 0 && (
                         <div className="flex gap-4 mt-4 pt-3 border-t border-gray-100">
