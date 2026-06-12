@@ -9,7 +9,7 @@ interface HeaderProps {
   onLogout: () => void
 }
 
-export function Header({ onOpenLogin, userSession, onLogout }: HeaderProps) {
+export function Header({ userSession, onLogout }: HeaderProps) {
   const [isScrolled, setIsScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [showProfileMenu, setShowProfileMenu] = useState(false)
